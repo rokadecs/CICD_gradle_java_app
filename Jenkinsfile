@@ -37,7 +37,7 @@ pipeline{
 
                         sh '''
                         docker build -t 35.200.177.108:8083/springapp:${VERSION} .
-                        docker login -u admin -p $docker_password 35.200.177.108:8083
+                        docker login -u admin --password-stdin $docker_password 35.200.177.108:8083
                         docker push 35.200.177.108:8083/springapp:${VERSION}
                         docker rmi 35.200.177.108:8083/springapp:${VERSION}
                         '''
