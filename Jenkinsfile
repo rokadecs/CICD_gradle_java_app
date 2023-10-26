@@ -48,6 +48,26 @@ pipeline{
 
         }
 
+        stage("pushing helmcharts to Nexus repo"){
+                steps{
+
+                    script{
+                        withCredentials([string(credentialsId: 'dockerNexus_pass', variable: 'nexus_password')]) {
+                      dir('kubernetes/'){
+
+                          sh '''
+                         helmversion=$( helm show chart myapp | grep version | cut -d':' -f 2 | tr -d ' ' )
+                         tar -czvf myapp-${helmversion}.tgz myapp/
+                         curl -u admin:$nexus_password http://34.93.183.110:8081/repository/helm-hosted/ --upload-file myapp-${helmversion}.tgz -v
+                        '''
+                      }      
+                        
+                        }
+                   }
+                }
+
+        }
+
         
     }
     
