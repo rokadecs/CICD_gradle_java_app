@@ -67,7 +67,7 @@ pipeline{
                 }
 
         }
-
+        // "Kubernetes Conti. Deployment" plugin is suspended from Jenkings hence we are not able to add kubeconfig credentials in jenkins
         stage('Deploying application on k8s cluster') {
             steps {
                script{
