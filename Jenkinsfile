@@ -37,10 +37,10 @@ pipeline{
                         withCredentials([string(credentialsId: 'dockerNexus_pass', variable: 'docker_password')]) {
 
                         sh '''
-                        docker build -t 34.93.183.110:8083/springapp:${VERSION} .
-                        docker login -u admin -p $docker_password 34.93.183.110:8083
-                        docker push 34.93.183.110:8083/springapp:${VERSION}
-                        docker rmi 34.93.183.110:8083/springapp:${VERSION}
+                        docker build -t 34.93.74.138:8083/springapp:${VERSION} .
+                        docker login -u admin -p $docker_password 34.93.74.138:8083
+                        docker push 34.93.74.138:8083/springapp:${VERSION}
+                        docker rmi 34.93.74.138:8083/springapp:${VERSION}
                         '''
                         }
                    }
@@ -58,7 +58,7 @@ pipeline{
                           sh '''
                          helmversion=$( helm show chart myapp | grep version | cut -d':' -f 2 | tr -d ' ' )
                          tar -czvf myapp-${helmversion}.tgz myapp/
-                         curl -u admin:$nexus_password http://34.93.183.110:8081/repository/helm-hosted/ --upload-file myapp-${helmversion}.tgz -v
+                         curl -u admin:$nexus_password http://34.93.74.138:8081/repository/helm-hosted/ --upload-file myapp-${helmversion}.tgz -v
                         '''
                       }      
                         
@@ -67,18 +67,7 @@ pipeline{
                 }
 
         }
-        // "Kubernetes Conti. Deployment" plugin is suspended from Jenkings hence we are not able to add kubeconfig credentials in jenkins
-        stage('Deploying application on k8s cluster') {
-            steps {
-               script{
-                   withCredentials([kubeconfigFile(credentialsId: 'kubernetes-config', variable: 'KUBECONFIG')]) {
-                        dir('kubernetes/') {
-                          sh 'helm upgrade --install --set image.repository="34.125.214.226:8083/springapp" --set image.tag="${VERSION}" myjavaapp myapp/ ' 
-                        }
-                    }
-               }
-            }
-        }
+        
 
 
         
