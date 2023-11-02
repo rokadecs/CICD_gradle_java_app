@@ -69,7 +69,7 @@ pipeline{
         stage('Updating latest image version in deployment file'){
             steps{
                 script{
-                    dir('/root/.jenkins/workspace/Java_Gradle_App/kubernetes/myapp/templates'){
+                    dir('/kubernetes/myapp/templates'){
                     sh '''
                     cat deployment.yaml
                     sed -i 's/springapp:VERSION/springapp:${VERSION}/g deployment.yaml'
