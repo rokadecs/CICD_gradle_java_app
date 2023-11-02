@@ -66,35 +66,24 @@ pipeline{
 
         //}
         
-        stage('Pull Artifact from Nexus') {
-        steps {
-        script {
-            def nexusUrl = 'http://34.93.74.138:8081/service/rest/repository/browse/helm-hosted/myapp/0.2.0/'
-            def artifactName = 'myapp-0.2.0.tgz'
-            def nexusCredentialsId = 'dockerNexus_pass'
-
-            withCredentials([usernamePassword(credentialsId: nexusCredentialsId, passwordVariable: 'NEXUS_PASSWORD')]) {
-                sh """
-                curl -u admin:$NEXUS_PASSWORD -o $artifactName $nexusUrl/$artifactName
-                """
-            }
-          }
-         }
-    
-        }
+       
 
         stage('Deploy to Kubernetes') {
         steps {
         script {
-            def kubeconfigPath = '/path/to/your/kubeconfig'
-            def namespace = 'your-namespace'
-            def deploymentName = 'your-deployment'
-            def artifactName = 'your-artifact.jar'
+            def kubeconfigPath = '/root/.kube/config'
+            def namespace = 'default'
+            def deploymentName = 'deployment'
+           
 
+            dir('kubernetes/'){
             sh """
-            kubectl --kubeconfig=$kubeconfigPath --namespace=$namespace apply -f your-deployment-manifest.yaml
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl
+            chmod u+x ./kubectl
+            kubectl --kubeconfig=$kubeconfigPath --namespace=$namespace apply -f deployment.yaml
             """
             }
+        }
         }
       }
 
