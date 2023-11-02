@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: springapp
-        image: springapp:39
+        image: springapp:VERSION
         ports:
         - containerPort: 80
 
