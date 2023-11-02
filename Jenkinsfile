@@ -66,21 +66,35 @@ pipeline{
 
         //}
         
-       
+        stage('Fetch Docker Image from Nexus') {
+            steps {
+                script {
+                    // Fetch the Docker image from Nexus
+                    def nexusUrl = 'http://34.93.74.138:8081/repository/docker-hosted/'
+                    def nexusCredentialsId = 'nexus-uname-pw'
+                    def imageName = 'springapp'
+                    def imageTag = '${VERSION}'
+
+                    docker.withRegistry(nexusUrl, nexusCredentialsId) {
+                        def customImage = docker.image("${imageName}:${imageTag}")
+                        customImage.pull()
+                    }
+                }
+            }
+        }
 
         stage('Deploy to Kubernetes') {
         steps {
         script {
-            def kubeconfigPath = '/root/.kube/config'
+            def kubeconfigPath = '/home/rokade_chetan12/kconfig'
             def namespace = 'default'
             def deploymentName = 'deployment'
            
-
+            // curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl
+            // chmod u+x ./kubectl
             dir('kubernetes/'){
             sh """
-            curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl
-            chmod u+x ./kubectl
-            kubectl --kubeconfig=$kubeconfigPath --namespace=$namespace apply -f deployment.yaml
+            /root/.jenkins/workspace/Java_Gradle_App/kubernetes/kubectl --kubeconfig=$kubeconfigPath --namespace=$namespace apply -f deployment.yaml
             """
             }
         }
