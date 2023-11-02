@@ -76,7 +76,7 @@ pipeline{
                     def imageTag = '${VERSION}'
 
                     docker.withRegistry(nexusUrl, nexusCredentialsId) {
-                        def customImage = docker.image("${imageName}:${imageTag}")
+                        def customImage = docker.image("${imageName}:${VERSION}")
                         customImage.pull()
                     }
                 }
@@ -92,7 +92,7 @@ pipeline{
            
             // curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl
             // chmod u+x ./kubectl
-            dir('kubernetes/'){
+            dir('/root/.jenkins/workspace/Java_Gradle_App/kubernetes/myapp/templates'){
             sh """
             /root/.jenkins/workspace/Java_Gradle_App/kubernetes/kubectl --kubeconfig=$kubeconfigPath --namespace=$namespace apply -f deployment.yaml
             """
@@ -100,7 +100,6 @@ pipeline{
         }
         }
       }
-
 
         
     }
