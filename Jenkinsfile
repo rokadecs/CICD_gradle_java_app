@@ -70,7 +70,7 @@ pipeline{
             steps {
                 script {
                     // Fetch the Docker image from Nexus
-                    def nexusUrl = 'http://34.93.74.138:8081/repository/docker-hosted/'
+                    def nexusUrl = 'http://34.93.74.138:8083/repository/docker-hosted/'
                     def nexusCredentialsId = 'nexus-uname-pw'
                     def imageName = 'springapp'
                     def imageTag = '${VERSION}'
