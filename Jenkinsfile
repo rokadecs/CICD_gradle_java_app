@@ -66,27 +66,13 @@ pipeline{
 
         //}
         
-        stage('Updating latest image version in deployment file'){
-            steps{
-                script{
-                    dir('/kubernetes/myapp/templates'){
-                    sh '''
-                    cat deployment.yaml
-                    sed -i 's/springapp:VERSION/springapp:${VERSION}/g deployment.yaml'
-                    cat deployment.yaml
-                    '''
-                    }
-
-                }
-            }
-
-        }
+        
 
         stage('Fetch Docker Image from Nexus') {
             steps {
                 script {
                     // Fetch the Docker image from Nexus
-                    def nexusUrl = 'http://34.93.74.138:8083/repository/docker-hosted/'
+                    def nexusUrl = 'http://34.93.74.138:8081/repository/docker-hosted/'
                     def nexusCredentialsId = 'nexus-uname-pw'
                     def imageName = 'springapp'
                     def imageTag = '${VERSION}'
@@ -108,7 +94,7 @@ pipeline{
            
             // curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl
             // chmod u+x ./kubectl
-            dir('/root/.jenkins/workspace/Java_Gradle_App/kubernetes/myapp/templates'){
+            dir('kubernetes/myapp/templates'){
             sh """
             /root/.jenkins/workspace/Java_Gradle_App/kubernetes/kubectl --kubeconfig=$kubeconfigPath --namespace=$namespace apply -f deployment.yaml
             """
